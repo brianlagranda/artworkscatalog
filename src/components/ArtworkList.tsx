@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text} from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
 
 import useArtworks from '../hooks/useArtworks';
 import ArtworkItem from './ArtworkItem';
@@ -8,21 +8,17 @@ const ArtworkList: React.FC = () => {
   const {artworks} = useArtworks();
 
   const artworksData = artworks?.data;
-
   const artworksConfig = artworks?.config;
 
   return (
-    <>
-      <Text style={styles.title}>Artworks Catalog</Text>
-      <FlatList
-        data={artworksData}
-        renderItem={({item: artwork}) => {
-          return <ArtworkItem {...artwork} {...artworksConfig} />;
-        }}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.flatListContainer}
-      />
-    </>
+    <FlatList
+      data={artworksData}
+      renderItem={({item: artwork}) => {
+        return <ArtworkItem {...artwork} {...artworksConfig} />;
+      }}
+      keyExtractor={item => item.id.toString()}
+      contentContainerStyle={styles.flatListContainer}
+    />
   );
 };
 

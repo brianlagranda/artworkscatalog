@@ -1,9 +1,11 @@
 module.exports = {
-  extractShortDescription(description: string) {
-    const dotIndex = description.indexOf('.');
+  extractHtmlTags(text: string) {
+    return text.replace(/<\/?[^>]+(>|$)/g, '');
+  },
 
-    const shortDescription = description.slice(0, dotIndex + 1);
+  shortText(text: string) {
+    const dotIndex = text.indexOf('.');
 
-    return shortDescription.replace(/<\/?[^>]+(>|$)/g, '');
+    return text.slice(0, dotIndex + 1);
   },
 };

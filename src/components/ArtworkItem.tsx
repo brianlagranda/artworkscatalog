@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 let helpers = require('../helpers/func');
 
@@ -29,24 +30,28 @@ const ArtworkItem: React.FC<ItemProps> = ({
 }) => {
   const hasImage = image_id !== null;
 
+  const navigation = useNavigation();
+
   if (!hasImage) {
     return null;
   }
 
   return (
     <View style={styles.artworkContainer} key={id}>
-      <Image
-        style={styles.thumbnail}
-        source={{
-          uri: `${iiif_url}/${image_id}/full/200,/0/default.jpg`,
-        }}
-      />
+      <TouchableOpacity onPress={() => navigation.navigate('Detailed', {id})}>
+        <Image
+          style={styles.thumbnail}
+          source={{
+            uri: `${iiif_url}/${image_id}/full/200,/0/default.jpg`,
+          }}
+        />
+      </TouchableOpacity>
       <Text style={styles.text}>
         {description === null
           ? title.startsWith('Untitled', 0)
             ? thumbnail.alt_text
             : title
-          : helpers.extractShortDescription(description)}
+          : helpers.extractHtmlTags(helpers.shortText(description))}
       </Text>
     </View>
   );
