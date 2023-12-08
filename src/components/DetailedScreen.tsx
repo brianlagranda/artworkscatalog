@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, Text, Image, StyleSheet} from 'react-native';
+import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 let helpers = require('../helpers/func');
 
 const fetchDetailsById = async (id: number): Promise<any> => {
   const response = await fetch(
-    `https://api.artic.edu/api/v1/artworks/${id}?fields=image_id,title,description,artist_title,dimensions`,
+    `https://api.artic.edu/api/v1/artworks/${id}?fields=image_id,title,description,artist_title,dimensions,place_of_origin,date_display`,
   );
   const data = await response.json();
   return data;
@@ -40,8 +40,6 @@ const DetailedScreen = ({route}: Props) => {
     return <Text>Loading...</Text>;
   }
 
-  console.log(artworksData.description);
-
   return (
     <ScrollView contentContainerStyle={styles.artworkContainer}>
       <Image
@@ -56,8 +54,35 @@ const DetailedScreen = ({route}: Props) => {
           ? ''
           : helpers.extractHtmlTags(artworksData.description)}
       </Text>
-      <Text style={styles.description}>
-        Artist: {artworksData.artist_title}
+
+      <Text style={styles.relevantInfo}>Artist</Text>
+      <Text style={styles.relevantInfoContent}>
+        {artworksData.artist_title}
+      </Text>
+
+      <View style={styles.separator} />
+
+      <Text style={styles.relevantInfo}>Dimensions</Text>
+      <Text style={styles.relevantInfoContent}>
+        {artworksData.dimensions === null
+          ? 'Not specified'
+          : artworksData.dimensions}
+      </Text>
+
+      <View style={styles.separator} />
+
+      <Text style={styles.relevantInfo}>Origin</Text>
+      <Text style={styles.relevantInfoContent}>
+        {artworksData.place_of_origin === null
+          ? 'Not specified'
+          : artworksData.place_of_origin}
+      </Text>
+
+      <View style={styles.separator} />
+
+      <Text style={styles.relevantInfo}>Date </Text>
+      <Text style={styles.relevantInfoContent}>
+        Made {artworksData.date_display}
       </Text>
     </ScrollView>
   );
@@ -69,6 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 50,
   },
   description: {
     color: '#000',
@@ -85,15 +111,30 @@ const styles = StyleSheet.create({
   },
   relevantInfo: {
     color: '#000',
-    fontSize: 24,
+    fontSize: 18,
     width: '100%',
-    paddingBottom: 40,
-    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  relevantInfoContent: {
+    color: '#777',
+    fontSize: 16,
+    width: '100%',
+    fontWeight: 'normal',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   detailedImage: {
     width: '100%',
     height: 700,
     resizeMode: 'contain',
+  },
+  separator: {
+    width: '95%',
+    borderColor: '#999',
+    borderWidth: 0.5,
   },
 });
 
