@@ -1,16 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-let helpers = require('../helpers/func');
-
-const fetchDetailsById = async (id: number): Promise<any> => {
-  const response = await fetch(
-    `https://api.artic.edu/api/v1/artworks/${id}?fields=image_id,title,description,artist_title,dimensions,place_of_origin,date_display`,
-  );
-  const data = await response.json();
-  return data;
-};
+import useSingleArtwork from '../hooks/useSingleArtwork';
 
 type RootStackParamList = {
   Home: undefined;
@@ -19,25 +11,17 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detailed'>;
 
+let helpers = require('../helpers/func');
+
 const DetailedScreen = ({route}: Props) => {
-  const [artworks, setArtworks] = useState<any>();
+  const {id} = route.params;
+  const {artwork} = useSingleArtwork(id);
 
-  const artworksData = artworks?.data;
-  const artworksConfig = artworks?.config;
+  const artworkData = artwork?.data;
+  const artworkConfig = artwork?.config;
 
-  useEffect(() => {
-    const fetchDetail = async () => {
-      const {id} = route.params;
-      console.log('ID:', id);
-      const response = await fetchDetailsById(id);
-      setArtworks(response);
-    };
-
-    fetchDetail();
-  }, []);
-
-  if (!artworks) {
-    return <Text>Loading...</Text>;
+  if (!artwork) {
+    return <Text style={styles.loading}>Loading...</Text>;
   }
 
   return (
@@ -45,44 +29,46 @@ const DetailedScreen = ({route}: Props) => {
       <Image
         style={styles.detailedImage}
         source={{
-          uri: `${artworksConfig.iiif_url}/${artworksData.image_id}/full/843,/0/default.jpg`,
+          uri: `${artworkConfig.iiif_url}/${artworkData.image_id}/full/843,/0/default.jpg`,
         }}
       />
-      <Text style={styles.title}>{artworksData.title}</Text>
+      <Text style={styles.title}>{artworkData.title}</Text>
       <Text style={styles.description}>
-        {artworksData.description === null
+        {artworkData.description === null
           ? ''
-          : helpers.extractHtmlTags(artworksData.description)}
+          : helpers.extractHtmlTags(artworkData.description)}
       </Text>
 
       <Text style={styles.relevantInfo}>Artist</Text>
       <Text style={styles.relevantInfoContent}>
-        {artworksData.artist_title}
+        {artworkData.artist_title === null
+          ? 'Not specified'
+          : artworkData.artist_title}
       </Text>
 
       <View style={styles.separator} />
 
       <Text style={styles.relevantInfo}>Dimensions</Text>
       <Text style={styles.relevantInfoContent}>
-        {artworksData.dimensions === null
+        {artworkData.dimensions === null
           ? 'Not specified'
-          : artworksData.dimensions}
+          : artworkData.dimensions}
       </Text>
 
       <View style={styles.separator} />
 
       <Text style={styles.relevantInfo}>Origin</Text>
       <Text style={styles.relevantInfoContent}>
-        {artworksData.place_of_origin === null
+        {artworkData.place_of_origin === null
           ? 'Not specified'
-          : artworksData.place_of_origin}
+          : artworkData.place_of_origin}
       </Text>
 
       <View style={styles.separator} />
 
       <Text style={styles.relevantInfo}>Date </Text>
       <Text style={styles.relevantInfoContent}>
-        Made {artworksData.date_display}
+        Made {artworkData.date_display}
       </Text>
     </ScrollView>
   );
@@ -135,6 +121,13 @@ const styles = StyleSheet.create({
     width: '95%',
     borderColor: '#999',
     borderWidth: 0.5,
+  },
+  loading: {
+    width: '100%',
+    height: '100%',
+    color: '#000',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 
