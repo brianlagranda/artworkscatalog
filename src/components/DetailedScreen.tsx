@@ -1,5 +1,12 @@
 import React from 'react';
-import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import useSingleArtwork from '../hooks/useSingleArtwork';
@@ -21,7 +28,12 @@ const DetailedScreen = ({route}: Props) => {
   const artworkConfig = artwork?.config;
 
   if (!artwork) {
-    return <Text style={styles.loading}>Loading...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000" />
+        <Text style={styles.loading}>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -122,12 +134,10 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderWidth: 0.5,
   },
-  loading: {
-    width: '100%',
-    height: '100%',
-    color: '#000',
-    textAlign: 'center',
-    textAlignVertical: 'center',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
