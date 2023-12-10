@@ -2,6 +2,8 @@ import React from 'react';
 import {View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
+import FavouriteButton from './FavouriteButton';
+
 let helpers = require('../helpers/func');
 
 type ItemProps = {
@@ -30,6 +32,12 @@ const ArtworkItem: React.FC<ItemProps> = ({
 }) => {
   const hasImage = image_id !== null;
 
+  const artwork = {
+    id: id,
+    description: description,
+    image_id: image_id,
+  };
+
   const navigation = useNavigation();
 
   if (!hasImage) {
@@ -38,6 +46,7 @@ const ArtworkItem: React.FC<ItemProps> = ({
 
   return (
     <View style={styles.artworkContainer} key={id}>
+      <FavouriteButton {...artwork} />
       <TouchableOpacity onPress={() => navigation.navigate('Detailed', {id})}>
         <Image
           style={styles.thumbnail}
@@ -60,7 +69,7 @@ const ArtworkItem: React.FC<ItemProps> = ({
 const styles = StyleSheet.create({
   artworkContainer: {
     width: 350,
-    padding: 40,
+    padding: 20,
     gap: 10,
     marginBottom: 50,
     alignItems: 'center',
