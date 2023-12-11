@@ -1,18 +1,19 @@
 import React from 'react';
 import {View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 
 import FavouriteButton from './FavouriteButton';
 
 let helpers = require('../helpers/func');
 
-type ItemProps = {
+type Artwork = {
   id: number;
   description: string | null;
   image_id: string;
   title: string;
   thumbnail: Thumbnail;
   iiif_url: string;
+  favourite: boolean;
 };
 
 interface Thumbnail {
@@ -22,22 +23,22 @@ interface Thumbnail {
   alt_text: string;
 }
 
-const ArtworkItem: React.FC<ItemProps> = ({
+interface ArtworkItemProps extends Artwork {
+  onToggleFavourite: (id: number, newIsFavourite: boolean) => void;
+}
+
+type ArtworkItemRouteProp = RouteProp<{Detailed: {id: number}}, 'Detailed'>;
+
+const ArtworkItem: React.FC<ArtworkItemProps & ArtworkItemRouteProp> = ({
   id,
   description,
   image_id,
   title,
   thumbnail,
   iiif_url,
+  favourite,
 }) => {
   const hasImage = image_id !== null;
-
-  const artwork = {
-    id: id,
-    description: description,
-    image_id: image_id,
-  };
-
   const navigation = useNavigation();
 
   if (!hasImage) {
@@ -46,7 +47,15 @@ const ArtworkItem: React.FC<ItemProps> = ({
 
   return (
     <View style={styles.artworkContainer} key={id}>
-      <FavouriteButton {...artwork} />
+      <FavouriteButton
+        id={id}
+        description={description}
+        image_id={image_id}
+        title={title}
+        thumbnail={thumbnail}
+        iiif_url={iiif_url}
+        favourite={favourite || false}
+      />
       <TouchableOpacity onPress={() => navigation.navigate('Detailed', {id})}>
         <Image
           style={styles.thumbnail}
