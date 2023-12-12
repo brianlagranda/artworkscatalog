@@ -4,7 +4,7 @@ const APIurl =
   'https://api.artic.edu/api/v1/artworks?fields=id,title,thumbnail,date_display,artist_display,place_of_origin,description,dimensions,medium_display,artist_title,image_id';
 
 const useArtworks = () => {
-  const [artworks, setArtworks] = useState(null);
+  const [artworks, setArtworks] = useState({});
 
   const fetchArtworks = async () => {
     try {

@@ -2,9 +2,8 @@ import {useEffect, useState} from 'react';
 
 const useSingleArtwork = (id: number) => {
   const [artwork, setArtwork] = useState(null);
-  const artworkId: number = id;
 
-  const fetchSingleArtwork = async id => {
+  const fetchSingleArtwork = async () => {
     const APIurl = `https://api.artic.edu/api/v1/artworks/${id}?fields=id,title,thumbnail,date_display,artist_display,place_of_origin,description,dimensions,medium_display,artist_title,image_id`;
 
     try {
@@ -23,7 +22,7 @@ const useSingleArtwork = (id: number) => {
   };
 
   useEffect(() => {
-    fetchSingleArtwork(artworkId);
+    fetchSingleArtwork();
   });
 
   return {artwork};
