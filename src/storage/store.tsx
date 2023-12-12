@@ -12,7 +12,6 @@ interface Artwork {
 const storeData = async (artworks: Artwork[]) => {
   try {
     const jsonValue = JSON.stringify(artworks);
-    console.log(jsonValue);
 
     await AsyncStorage.setItem('NewStoredArtworks', jsonValue);
   } catch (error) {
